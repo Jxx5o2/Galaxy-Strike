@@ -2,8 +2,31 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] GameObject destroyedVFX;
+    [SerializeField] int hitPoints = 3;
+    [SerializeField] int scoreValue = 10;
+
+    Scoreboard scoreboard;
+
+    void Start()
+    {
+        scoreboard = FindFirstObjectByType<Scoreboard>();
+    }
+
     void OnParticleCollision(GameObject other)
     {
-        Destroy(this.gameObject);
+        ProcessHit();
+    }
+
+    private void ProcessHit()
+    {
+        hitPoints--;
+
+        if (hitPoints <= 0)
+        {
+            scoreboard.IncreaseScore(scoreValue);
+            Instantiate(destroyedVFX, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
     }
 }
